@@ -2,7 +2,7 @@
 JWT for Lasso9
 
 
-#generate JWT:
+# generate JWT:
 
 // payload is actually whatever you want, these are just some suggestions
 // exp is used by most libraries to check expiry date [UNIX datetime as integer]
@@ -18,14 +18,16 @@ local(payload = map( 'authLevel' = 10,
 jwt_encode(#payload, '//*** TOP SECRET ***//', 'HS256')
 
 
-#decode JWT:
+
+# decode JWT:
 
 //the debugger @ https://jwt.io/ is usefull to ensure that everything is working correctly
 
 jwt_decode('//*** JWT ***//', '//*** TOP SECRET ***//')
 
 
-#use on site:
+
+# use on site:
 
 // this retrieves the JWT from the header and checks it for validity, the checks are note extensive 
 // and only an example of what can be done
