@@ -1,0 +1,55 @@
+define jwt_decode(
+			jwt::string,
+			key::string,
+			allowedmethods::array = array('HS256', 'HS384', 'HS512')
+		) => {
+			
+	/* *************************************************************************************
+		
+		purpose: decode JWT
+		
+		inputs:  jwt(string), key(string), allowed_method(string) [HS256, HS384, HS512]
+				 allowed methods was suggestion from Jolle Carlestam
+				
+		output: payload (map) with 'error' = 'none' if everything is ok, otherwise 'error' = #error
+		
+		dependencies: jwt_urlsafeB64Decode, jwt_sign, jwt_stringToUrlSafe
+		
+		(C) 2017 - current Alexander G. Betz
+		
+	************************************************************************************* */	
+	
+	local( method, payload = map, parts, headb64, bodyb64, cryptob64, header, signature, error )
+	
+	#parts = #jwt -> split('.')
+
+	if( #parts -> size == 3 ) => {
+		
+		#headb64 = #parts -> get(1)
+		
+		#header	= json_decode(jwt_urlsafeB64Decode(#headb64) -> asstring)
+		#method	= #header -> find('alg')
+		
+		if(not (#allowedmethods >> #method)) => {
+			
+			#error = 'Signature verification failed. Signature algoritm not allowed (' + #method + ')'
+
+		else
+		
+			#cryptob64 = #parts -> get(3)
+			#bodyb64 = #parts -> get(2)
+			#payload = json_decode(jwt_urlsafeB64Decode(#bodyb64) -> asstring)
+			#signature	= jwt_stringToUrlSafe(jwt_sign(#headb64 + '.' + #bodyb64, #key, #method))
+			
+			#error = ( #cryptob64 == #signature ? 'none' | 'tamper alert!' )
+		}
+		
+	else	
+		
+		#error = 'Not a valid JWT'
+	}
+	
+	#payload -> insert('error' = #error)
+	
+	return(#payload)
+}
