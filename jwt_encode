@@ -1,7 +1,7 @@
 define jwt_encode(
-			payload,
-			key::string,
-			method::string
+		payload,
+		key::string,
+		method::string
 		) => {
 			
 	/* *************************************************************************************
