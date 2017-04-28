@@ -1,0 +1,99 @@
+define jwt_authorization => type {
+	
+	/* *************************************************************************************
+		
+		purpose: to check for valid JWT and validate params
+		
+		inputs:  none ( retrieves web_request->header('Authorization') )
+				
+		output: error(string), user(string), auth_level(integer), ip_address(string), sub(string), exp(string)
+		
+		dependencies: jwt_decode
+		
+		(C) 2017 - current Alexander G. Betz
+		
+	************************************************************************************* */
+	
+	data private jwt::string
+		,private key::string = '// *** TOP SECRET ***//'
+		,public error::string = ''
+		,public user::string = ''
+		,public auth_level::integer = 0
+		,public ip_address::string = ''
+		,public sub::string = ''
+		,public exp::integer = 0
+
+
+	public onCreate => {
+
+		if(.getJWT()) => {
+			
+			.decodeJWT()
+		}
+	}
+	
+	private getJWT => {
+		
+		local(header, header_array)
+
+		if(string(web_request->header('Authorization')) != '') => {
+		
+			#header = string(web_request->header('Authorization'))
+			
+			#header_array = #header->split(' ')
+			
+			if(#header_array->size == 2) => {
+				
+				// one could check for 'bearer' #header_array -> get(1)
+				
+				.jwt = #header_array -> get(2)
+				
+			else
+			
+				.error = 'no JWT present'
+			}
+	
+		else
+		
+			.error = 'no authorization data in header' 	
+			
+		}
+		 		
+		return ( .error == '' ? true | false )
+
+		
+	}	
+	
+	private decodeJWT => {
+		
+		local(payload)
+		
+		#payload = jwt_decode(.jwt, .key)
+	
+		
+		if( #payload->find('error') == 'none' ) => {
+		
+			.user = #payload->find('userName')
+			.auth_level = #payload->find('authLevel')
+			.ip_address = #payload->find('ipAddress')
+			.sub = #payload->find('sub')
+			.exp = #payload->find('exp')
+			
+		else
+		
+			.error = #payload->find('error')
+		}
+		
+		if( .exp < date(server_date) -> asinteger ) => {
+			
+			.error = 'token expired'
+			
+		// else other checks  i.e sub in DB or other stuff
+			
+		// else( .ip_address != client_ip )
+		
+		//	.error = "token hijacked"
+			
+		}
+	}
+}
