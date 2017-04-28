@@ -1,0 +1,33 @@
+define jwt_sign(
+			msg::string,
+			key::string,
+			method::string	= 'HS256'
+		) => {
+			
+	/* *************************************************************************************
+		
+		purpose: signature for JWT
+		
+		inputs:  message(string), key(string), method(string) [HS256, HS384, HS512]
+		
+		output: jwt signature (string)
+		
+		dependencies: none
+		
+		(C) 2017 - current Alexander G. Betz
+		
+	************************************************************************************* */		
+			
+			
+	local( methods, method_used )
+	
+	#methods		= map('HS256' = 'SHA256', 'HS384' = 'SHA384', 'HS512' = 'SHA512')
+	#method_used	= #methods -> find(#method)
+
+	return encrypt_hmac( 
+			-token	  = #msg,
+			-password = #key,
+			-digest	  = #method_used,
+			-base64
+	)
+}
