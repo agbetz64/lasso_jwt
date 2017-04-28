@@ -1,0 +1,24 @@
+define jwt_urlsafeB64Encode(
+			input::string
+		) => {
+	
+	/* *************************************************************************************
+		
+		purpose: base64 encode string and make it url-safe
+		
+		inputs: input(string)
+		
+		output: (string) - url_safe
+		
+		dependencies: jwt_stringToUrlSafe
+		
+		(C) 2017 - current Alexander G. Betz
+		
+	************************************************************************************* */
+	
+	local(o)
+	
+	#o = jwt_stringToUrlSafe(string(bytes(#input) -> encodebase64))
+	
+	return(#o)
+}
