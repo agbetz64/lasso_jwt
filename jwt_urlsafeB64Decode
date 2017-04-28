@@ -1,0 +1,27 @@
+define jwt_urlsafeB64Decode(
+			input::string
+		) => {
+			
+	/* *************************************************************************************
+		
+		purpose: decode url-safe base64 string 
+		
+		inputs: input(string)
+		
+		output: (string)
+				
+		dependencies: none
+		
+		(C) 2017 - current Alexander G. Betz
+		
+	************************************************************************************* */
+	
+	local(o)
+	
+	#o = string(#input) // copy as to not tamper with original string
+	#o -> append('=' * ( 4 - #o -> size % 4))
+	#o -> replace('-', '+')
+	#o -> replace('_', '/')
+
+	return(bytes(#o)->decodebase64)
+}
