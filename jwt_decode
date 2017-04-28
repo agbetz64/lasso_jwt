@@ -1,7 +1,7 @@
 define jwt_decode(
-			jwt::string,
-			key::string,
-			allowedmethods::array = array('HS256', 'HS384', 'HS512')
+		jwt::string,
+		key::string,
+		allowedmethods::array = array('HS256', 'HS384', 'HS512')
 		) => {
 			
 	/* *************************************************************************************
