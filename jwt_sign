@@ -21,7 +21,7 @@ define jwt_sign(
 			
 	local( methods, method_used )
 	
-	#methods		= map('HS256' = 'SHA256', 'HS384' = 'SHA384', 'HS512' = 'SHA512')
+	#methods	= map('HS256' = 'SHA256', 'HS384' = 'SHA384', 'HS512' = 'SHA512')
 	#method_used	= #methods -> find(#method)
 
 	return encrypt_hmac( 
