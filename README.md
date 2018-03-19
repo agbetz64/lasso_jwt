@@ -29,7 +29,7 @@ jwt_decode('//*** JWT ***//', '//*** TOP SECRET ***//')
 
 # use on site:
 
-// this retrieves the JWT from the header and checks it for validity, the checks are note extensive 
+// this retrieves the JWT from the header and checks it for validity, the checks are not extensive 
 // and only an example of what can be done
 
 
